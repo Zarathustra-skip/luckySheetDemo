@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>值班表</title>
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/socket.io/1.5.1/socket.io.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet/dist/plugins/css/pluginsCss.css' />
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/plugins/css/pluginsCss.css' />
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/plugins/plugins.css' />
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/css/luckysheet.css' />
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/assets/iconfont/iconfont.css' />
+<script src="https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/plugins/js/plugin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/luckysheet.umd.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
+</head>
+<body>
+<div id="luckysheet" style="margin:0px;padding:0px;position:absolute;width:100%;height:100%;left: 0px;top: 0px;"></div>
+<script>
+    $(function () {
+        var namespace = '/upload';
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+        var dat = luckysheet.getAllSheets();
+        socket.on('connect', function() {
+            socket.emit('my event', {data: 'date'});
+        });
+        //配置项
+        var options = {
+            container: 'luckysheet', //luckysheet为容器id
+            title: "值班表",
+            lang: "zh",
+            loadUrl:"/api/load",
+            gridKey: "值班",
+            allowEdit: true,
+            hook:{
+                updated: function(r,c,oldValue, newValue, isRefresh) {
+                var dat = JSON.stringify(luckysheet.getAllSheets());
+                socket.emit('update', {gridKey: dat});
+
+        }
+            }
+        }
+        luckysheet.create(options)
+    })
+
+</script>
+</body>
+</html>
