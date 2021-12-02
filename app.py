@@ -52,6 +52,6 @@ def ajax():
 
 
 if __name__ == "__main__":
-    r = redis.Redis(host='110.40.154.248', port=6379, password='123.com', decode_responses=True)
+    r = redis.Redis(host='127.0.0.1', port=6379, password='passwd', decode_responses=True)
     # app.run(debug=True)
-    socketio.run(app, host="172.22.116.13" )
+    socketio.run(app, host="127.0.0.1" )
